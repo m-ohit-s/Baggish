@@ -1,4 +1,21 @@
 <resources>
     <string name="app_name">Baggish</string>
     <string name="brand_logo_description">Brand Logo</string>
+
+    <string name="sign_up_first_name">First Name</string>
+    <string name="sign_up_last_name">Last Name</string>
+    <string name="sign_up_email">E-Mail</string>
+    <string name="sign_up_password">Password</string>
+    <string name="sign_up_confirm_password">Confirm Password</string>
+    <string name="sign_up_button">Create Account</string>
+    <string name="google_sign_up_button">Sign Up with Google</string>
+    <string name="google_logo_description">google logo</string>
+    <string name="move_to_sign_in">Already have an account? Log in.</string>
+
+
+    <string name="sign_in_email">E-Mail</string>
+    <string name="sign_in_password">Password</string>
+    <string name="sign_in_button">Login</string>
+    <string name="google_sign_in_button">Sign In with Google</string>
+    <string name="move_to_sign_up">Don\'t have an account? Create one.</string>
 </resources>
