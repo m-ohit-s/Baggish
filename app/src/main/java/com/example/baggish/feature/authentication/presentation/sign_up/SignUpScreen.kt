@@ -1,7 +1,9 @@
 package com.example.baggish.feature.authentication.presentation.sign_up
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,10 +15,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.baggish.R
 import com.example.baggish.core.presentation.components.BrandDesign
+import com.example.baggish.feature.authentication.presentation.sign_in.components.SignInButton
+import com.example.baggish.feature.authentication.presentation.sign_up.components.ConditionsField
 import com.example.baggish.feature.authentication.presentation.sign_up.components.SignUpButton
 import com.example.baggish.feature.authentication.presentation.sign_up.components.SignUpEntryField
 import com.example.baggish.ui.theme.BaggishTheme
@@ -64,6 +69,11 @@ fun SignUpScreen(modifier: Modifier = Modifier) {
                     onValueChange = {},
                     isPassword = true
                 )
+                ConditionsField(
+                    onCheckedChange = {},
+                    text = stringResource(id = R.string.sign_up_terms_text),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 50.dp)
+                )
                 Column(modifier = Modifier.padding(80.dp, 30.dp)) {
                     SignUpButton(
                         buttonItem = {
@@ -76,10 +86,17 @@ fun SignUpScreen(modifier: Modifier = Modifier) {
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
-                Text(
-                    text = stringResource(id = R.string.move_to_sign_in),
-                    style = MaterialTheme.typography.bodySmall
-                )
+                Row {
+                    Text(
+                        text = stringResource(id = R.string.move_to_sign_in_text),
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    Text(
+                        text = stringResource(id = R.string.move_to_sign_in_button_text),
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.clickable {  }
+                    )
+                }
             }
         }
     }
