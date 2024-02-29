@@ -6,6 +6,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 
 class SignInViewModel: ViewModel() {
-    var localState by mutableStateOf(SignInLocalState())
+    var state by mutableStateOf(SignInState())
 
 }

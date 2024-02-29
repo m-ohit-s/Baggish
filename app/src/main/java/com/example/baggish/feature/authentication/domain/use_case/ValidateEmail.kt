@@ -1,21 +1,23 @@
 package com.example.baggish.feature.authentication.domain.use_case
 
-import android.content.res.Resources
-import android.util.Patterns
-import com.example.baggish.R
+import com.example.baggish.feature.authentication.common.Constants
+import com.example.baggish.feature.authentication.domain.repository.EmailValidationRepository
+import javax.inject.Inject
 
-class ValidateEmail {
+class ValidateEmail @Inject constructor(
+    private val emailValidationRepository: EmailValidationRepository
+) {
     fun execute(email: String): ValidationResult{
         if(email.isBlank()){
             return ValidationResult(
                 successful = false,
-                errorMessage = Resources.getSystem().getString(R.string.local_email_validation_empty_email)
+                errorMessage = Constants.EMAIL_EMPTY_ERROR
             )
         }
-        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+        if(emailValidationRepository.validateEmailPattern(email)){
             return ValidationResult(
                 successful = false,
-                errorMessage = Resources.getSystem().getString(R.string.local_email_validation_wrong_email_format)
+                errorMessage = Constants.EMAIL_PATTERN_ERROR
             )
         }
         return ValidationResult(

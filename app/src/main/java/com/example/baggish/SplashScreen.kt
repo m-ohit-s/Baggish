@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.navigation.NavController
 import com.example.baggish.core.presentation.components.BrandDesign
+import com.example.baggish.feature.authentication.presentation.AuthenticationScreen
 import kotlinx.coroutines.delay
 
 
@@ -29,14 +30,18 @@ fun SplashScreen(
         scale.animateTo(
             1f,
             animationSpec = tween(
-                durationMillis = 500,
+                durationMillis = 1500,
                 easing = {
                     OvershootInterpolator(2f).getInterpolation(it)
                 }
             )
         )
-        delay(1000L)
-        navController.navigate("login_screen")
+        delay(2000L)
+        navController.navigate(AuthenticationScreen.SignInScreen.route){
+            popUpTo(StartScreen.SplashScreen.route){
+                inclusive = true
+            }
+        }
     }
     Box(
         modifier = Modifier

@@ -1,22 +1,24 @@
 package com.example.baggish.feature.authentication.domain.use_case
 
-import android.content.res.Resources
-import android.util.Patterns
-import com.example.baggish.R
+import com.example.baggish.feature.authentication.common.Constants
+import com.example.baggish.feature.authentication.domain.repository.PasswordValidationRepository
+import javax.inject.Inject
 
-class ValidatePassword {
+class ValidatePassword @Inject constructor(
+    val passwordValidationRepository: PasswordValidationRepository
+) {
     fun execute(password: String): ValidationResult{
         if(password.length < 8){
             return ValidationResult(
                 successful = false,
-                errorMessage = Resources.getSystem().getString(R.string.local_password_validation_short_length)
+                errorMessage = Constants.PASSWORD_LENGTH_ERROR
             )
         }
-        val containLetterAndDigit = password.any{ it.isLetter() } && password.any{ it.isDigit() }
-        if(!containLetterAndDigit){
+        val passwordPattern = passwordValidationRepository.validatePasswordPattern(password)
+        if(!passwordPattern){
             return ValidationResult(
                 successful = false,
-                errorMessage = Resources.getSystem().getString(R.string.local_password_validation_wrong_password_format)
+                errorMessage = Constants.PASSWORD_PATTERN_ERROR
             )
         }
         return ValidationResult(

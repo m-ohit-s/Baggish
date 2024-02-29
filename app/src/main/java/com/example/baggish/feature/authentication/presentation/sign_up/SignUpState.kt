@@ -1,6 +1,6 @@
-package com.example.baggish.feature.authentication.presentation.sign_in
+package com.example.baggish.feature.authentication.presentation.sign_up
 
-data class SignInLocalState(
+data class SignUpState(
     val firstName: String = "",
     val firstNameError: String? = null,
     val lastName: String = "",
@@ -12,5 +12,7 @@ data class SignInLocalState(
     val confirmPassword: String = "",
     val confirmPasswordError: String? = null,
     val acceptedTerms: Boolean = false,
-    val termsError: Boolean? = null,
+    val termsError: String? = null,
+    val passwordVisible: Boolean = false,
+    val confirmPasswordVisible: Boolean = false
 )
