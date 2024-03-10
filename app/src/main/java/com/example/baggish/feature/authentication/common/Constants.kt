@@ -9,10 +9,14 @@ object Constants {
     //error messages
     const val FIRST_NAME_EMPTY_ERROR = "first name cannot be blank"
     const val EMAIL_EMPTY_ERROR = "the email cannot be blank"
-    const val EMAIL_PATTERN_ERROR = "That\\'s not a valid email"
+    const val EMAIL_PATTERN_ERROR = "That\'s not a valid email"
     const val PASSWORD_LENGTH_ERROR = "The password length should be greater than 8"
     const val PASSWORD_PATTERN_ERROR = "The password needs to contain at least one letter and one digit"
     const val CONFIRM_PASSWORD_MATCH_ERROR = "The passwords do not match"
     const val TERMS_ERROR = "Please accept the terms"
+    const val PASSWORD_EMPTY_ERROR = "the password cannot be blank"
+
+    const val NETWORK_ERROR = "Cannot reach the server. Please Check your internet Connection"
+    const val UNEXPECTED_ERROR = "An unexpected error occurred"
 
 }

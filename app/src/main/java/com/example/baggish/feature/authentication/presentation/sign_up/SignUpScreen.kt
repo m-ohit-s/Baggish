@@ -32,10 +32,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.baggish.R
 import com.example.baggish.core.presentation.components.BrandDesign
-import com.example.baggish.feature.authentication.common.TextFieldKeyboardType
+import com.example.baggish.core.presentation.components.LoadingAnimation
+import com.example.baggish.feature.authentication.common.enums.TextFieldKeyboardType
+import com.example.baggish.feature.authentication.data.model.RegisterUser
+import com.example.baggish.feature.authentication.domain.model.User
 import com.example.baggish.feature.authentication.presentation.AuthenticationScreen
 import com.example.baggish.feature.authentication.presentation.sign_up.components.ConditionsField
 import com.example.baggish.feature.authentication.presentation.sign_up.components.SignUpButton
+import com.example.baggish.feature.home.presentation.Screen
 
 @Composable
 fun SignUpScreen(
@@ -48,201 +52,255 @@ fun SignUpScreen(
         color = MaterialTheme.colorScheme.inversePrimary
     ) {
         val state = signUpViewModel.state
+        val registrationState = signUpViewModel.registrationState
         val context = LocalContext.current
         LaunchedEffect(key1 = context){
             signUpViewModel.validationEvents.collect{event->
                 when(event){
                     is ValidationEvent.Success -> {
-                        Toast.makeText(
-                            context,
-                            "Registration Successful",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        val user = User(
+                            state.value.firstName,
+                            state.value.lastName,
+                            state.value.email,
+                            state.value.password
+                        )
+                        signUpViewModel.register(user)
                     }
                 }
             }
         }
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 30.dp)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            BrandDesign()
+        if(!registrationState.value.isLoading) {
             Column(
                 modifier = Modifier
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                    .fillMaxWidth()
+                    .padding(vertical = 30.dp)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                SignUpEntryField(
-                    label = stringResource(id = R.string.sign_up_first_name),
-                    value = state.value.firstName,
-                    onValueChange = {
-                        signUpViewModel.onEvent(SignUpFormEvent.FirstNameChanged(it))
-                    },
-                )
-                if(state.value.firstNameError != null){
-                    Text(
-                        text = state.value.firstNameError!!,
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall ,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 16.dp, end = 16.dp)
-
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
-                SignUpEntryField(
-                    label = stringResource(id = R.string.sign_up_last_name),
-                    value = state.value.lastName,
-                    onValueChange = {
-                        signUpViewModel.onEvent(SignUpFormEvent.LastNameChanged(it))
-                    },
-                )
-                SignUpEntryField(
-                    label = stringResource(id = R.string.sign_up_email),
-                    value = state.value.email,
-                    onValueChange = { 
-                        signUpViewModel.onEvent(SignUpFormEvent.EmailChanged(it)) 
-                    },
-                    textFieldKeyboardType = TextFieldKeyboardType.EMAIL,
-                    
-                )
-                if(state.value.emailError != null){
-                    Text(
-                        text = state.value.emailError!!,
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall ,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 16.dp, end = 16.dp)
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
-                SignUpEntryField(
-                    label = stringResource(id = R.string.sign_up_password),
-                    value = state.value.password,
-                    onValueChange = { signUpViewModel.onEvent(SignUpFormEvent.PasswordChanged(it)) },
-                    textFieldKeyboardType = if(state.value.passwordVisible) TextFieldKeyboardType.PASSWORD else TextFieldKeyboardType.TEXT,
-                    suffix = {
-                        if(state.value.passwordVisible)
-                            Icon(
-                                imageVector = Icons.Rounded.VisibilityOff,
-                                contentDescription = null,
-                                Modifier.clickable {
-                                    signUpViewModel.onEvent(SignUpFormEvent.PasswordVisibilityChanged(!state.value.passwordVisible))
-                                }
-                            )
-                        else
-                            Icon(
-                                imageVector = Icons.Rounded.Visibility,
-                                contentDescription = null,
-                                Modifier.clickable {
-                                    signUpViewModel.onEvent(SignUpFormEvent.PasswordVisibilityChanged(!state.value.passwordVisible))
-                                }
-                            )
-                    }
-                )
-                if(state.value.passwordError != null){
-                    Text(
-                        text = state.value.passwordError!!,
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 16.dp, end = 16.dp)
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
-                SignUpEntryField(
-                    label = stringResource(id = R.string.sign_up_confirm_password),
-                    value = state.value.confirmPassword,
-                    onValueChange = { signUpViewModel.onEvent(SignUpFormEvent.ConfirmPasswordChanged(it)) },
-                    textFieldKeyboardType = if(state.value.confirmPasswordVisible) TextFieldKeyboardType.PASSWORD else TextFieldKeyboardType.TEXT,
-                    suffix = {
-                        if(state.value.confirmPasswordVisible)
-                            Icon(
-                                imageVector = Icons.Rounded.VisibilityOff,
-                                contentDescription = null,
-                                Modifier.clickable {
-                                    signUpViewModel.onEvent(SignUpFormEvent.ConfirmPasswordVisibilityChanged(!state.value.confirmPasswordVisible))
-                                }
-                            )
-                        else
-                            Icon(
-                                imageVector = Icons.Rounded.Visibility,
-                                contentDescription = null,
-                                Modifier.clickable {
-                                    signUpViewModel.onEvent(SignUpFormEvent.ConfirmPasswordVisibilityChanged(!state.value.confirmPasswordVisible))
-                                }
-                            )
-                    }
-                )
-                if(state.value.confirmPasswordError != null){
-                    Text(
-                        text = state.value.confirmPasswordError!!,
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal=16.dp)
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
-                ConditionsField(
-                    isChecked = state.value.acceptedTerms,
-                    onCheckedChange = {signUpViewModel.onEvent(SignUpFormEvent.AcceptedTerms(it)) },
-                    text = stringResource(id = R.string.sign_up_terms_text),
+                BrandDesign()
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 50.dp)
-                )
-                if(state.value.termsError != null){
-                    Text(
-                        text = state.value.termsError!!,
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+
+                    //First Name
+                    SignUpEntryField(
+                        label = stringResource(id = R.string.sign_up_first_name),
+                        value = state.value.firstName,
+                        onValueChange = {
+                            signUpViewModel.onEvent(SignUpFormEvent.FirstNameChanged(it))
+                        },
+                    )
+                    if (state.value.firstNameError != null) {
+                        Text(
+                            text = state.value.firstNameError!!,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 50.dp)
+
                         )
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
-                Column(modifier = Modifier.padding(80.dp, 30.dp)) {
-                    SignUpButton(
-                        buttonItem = {
-                            Text(
-                                text = stringResource(id = R.string.sign_up_button),
-                                color = Color.White,
-                            )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+
+                    //Last Name
+                    SignUpEntryField(
+                        label = stringResource(id = R.string.sign_up_last_name),
+                        value = state.value.lastName,
+                        onValueChange = {
+                            signUpViewModel.onEvent(SignUpFormEvent.LastNameChanged(it))
                         },
-                        onClick = {
-                                  signUpViewModel.onEvent(SignUpFormEvent.Submit)
+                    )
+
+                    //Email
+                    SignUpEntryField(
+                        label = stringResource(id = R.string.sign_up_email),
+                        value = state.value.email,
+                        onValueChange = {
+                            signUpViewModel.onEvent(SignUpFormEvent.EmailChanged(it))
                         },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-                Row {
-                    Text(
-                        text = stringResource(id = R.string.move_to_sign_in_text),
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                    Text(
-                        text = stringResource(id = R.string.move_to_sign_in_button_text),
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.clickable {
-                            navController.navigate(AuthenticationScreen.SignInScreen.route){
-                                popUpTo(AuthenticationScreen.SignUpScreen.route){
-                                    inclusive = true
-                                }
-                            }
+                        textFieldKeyboardType = TextFieldKeyboardType.EMAIL,
+
+                        )
+                    if (state.value.emailError != null) {
+                        Text(
+                            text = state.value.emailError!!,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 50.dp)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+
+                    //Password
+                    SignUpEntryField(
+                        label = stringResource(id = R.string.sign_up_password),
+                        value = state.value.password,
+                        onValueChange = { signUpViewModel.onEvent(SignUpFormEvent.PasswordChanged(it)) },
+                        textFieldKeyboardType = if (!state.value.passwordVisible) TextFieldKeyboardType.PASSWORD else TextFieldKeyboardType.TEXT,
+                        suffix = {
+                            if (!state.value.passwordVisible)
+                                Icon(
+                                    imageVector = Icons.Rounded.Visibility,
+                                    contentDescription = null,
+                                    Modifier.clickable {
+                                        signUpViewModel.onEvent(
+                                            SignUpFormEvent.PasswordVisibilityChanged(
+                                                !state.value.passwordVisible
+                                            )
+                                        )
+                                    }
+                                )
+                            else
+                                Icon(
+                                    imageVector = Icons.Rounded.VisibilityOff,
+                                    contentDescription = null,
+                                    Modifier.clickable {
+                                        signUpViewModel.onEvent(
+                                            SignUpFormEvent.PasswordVisibilityChanged(!state.value.passwordVisible)
+                                        )
+                                    }
+                                )
                         }
                     )
+                    if (state.value.passwordError != null) {
+                        Text(
+                            text = state.value.passwordError!!,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 50.dp)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+
+                    //Confirm Password
+                    SignUpEntryField(
+                        label = stringResource(id = R.string.sign_up_confirm_password),
+                        value = state.value.confirmPassword,
+                        onValueChange = {
+                            signUpViewModel.onEvent(
+                                SignUpFormEvent.ConfirmPasswordChanged(
+                                    it
+                                )
+                            )
+                        },
+                        textFieldKeyboardType = if (!state.value.confirmPasswordVisible) TextFieldKeyboardType.PASSWORD else TextFieldKeyboardType.TEXT,
+                        suffix = {
+                            if (!state.value.confirmPasswordVisible)
+                                Icon(
+                                    imageVector = Icons.Rounded.Visibility,
+                                    contentDescription = null,
+                                    Modifier.clickable {
+                                        signUpViewModel.onEvent(
+                                            SignUpFormEvent.ConfirmPasswordVisibilityChanged(
+                                                !state.value.confirmPasswordVisible
+                                            )
+                                        )
+                                    }
+                                )
+                            else
+                                Icon(
+                                    imageVector = Icons.Rounded.VisibilityOff,
+                                    contentDescription = null,
+                                    Modifier.clickable {
+                                        signUpViewModel.onEvent(
+                                            SignUpFormEvent.ConfirmPasswordVisibilityChanged(
+                                                !state.value.confirmPasswordVisible
+                                            )
+                                        )
+                                    }
+                                )
+                        }
+                    )
+                    if (state.value.confirmPasswordError != null) {
+                        Text(
+                            text = state.value.confirmPasswordError!!,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 50.dp),
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+
+                    //Terms
+                    ConditionsField(
+                        isChecked = state.value.acceptedTerms,
+                        onCheckedChange = { signUpViewModel.onEvent(SignUpFormEvent.AcceptedTerms(it)) },
+                        text = stringResource(id = R.string.sign_up_terms_text),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 50.dp)
+                    )
+                    if (state.value.termsError != null) {
+                        Text(
+                            text = state.value.termsError!!,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 60.dp)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+
+                    //Button
+                    Column(modifier = Modifier.padding(80.dp, 30.dp)) {
+                        SignUpButton(
+                            buttonItem = {
+                                Text(
+                                    text = stringResource(id = R.string.sign_up_button),
+                                    color = Color.White,
+                                )
+                            },
+                            onClick = {
+                                signUpViewModel.onEvent(SignUpFormEvent.Submit)
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+
+                    //Move to sign in - navigation
+                    Row {
+                        Text(
+                            text = stringResource(id = R.string.move_to_sign_in_text),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                        Text(
+                            text = stringResource(id = R.string.move_to_sign_in_button_text),
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.clickable {
+                                navController.navigate(AuthenticationScreen.SignInScreen.route) {
+                                    popUpTo(AuthenticationScreen.SignUpScreen.route) {
+                                        inclusive = true
+                                    }
+                                }
+                            }
+                        )
+                    }
                 }
             }
+        }
+        if(registrationState.value.isLoading){
+            LoadingAnimation(modifier = Modifier.fillMaxSize())
+        }
+        if(registrationState.value.error.isNotBlank()){
+            Toast.makeText(
+                context,
+                registrationState.value.error,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+        if(registrationState.value.user != RegisterUser()){
+            navController.navigate(Screen.HomeScreen.route)
         }
     }
 }

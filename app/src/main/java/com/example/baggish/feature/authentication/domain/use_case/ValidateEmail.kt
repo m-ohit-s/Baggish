@@ -14,7 +14,7 @@ class ValidateEmail @Inject constructor(
                 errorMessage = Constants.EMAIL_EMPTY_ERROR
             )
         }
-        if(emailValidationRepository.validateEmailPattern(email)){
+        if(!emailValidationRepository.validateEmailPattern(email)){
             return ValidationResult(
                 successful = false,
                 errorMessage = Constants.EMAIL_PATTERN_ERROR

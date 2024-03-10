@@ -4,6 +4,11 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.baggish.feature.authentication.common.Constants
+import com.example.baggish.feature.authentication.common.Resource
+import com.example.baggish.feature.authentication.data.model.RegisterUser
+import com.example.baggish.feature.authentication.domain.model.User
+import com.example.baggish.feature.authentication.domain.use_case.Registration
 import com.example.baggish.feature.authentication.domain.use_case.ValidateConfirmPassword
 import com.example.baggish.feature.authentication.domain.use_case.ValidateEmail
 import com.example.baggish.feature.authentication.domain.use_case.ValidateFirstName
@@ -11,6 +16,8 @@ import com.example.baggish.feature.authentication.domain.use_case.ValidatePasswo
 import com.example.baggish.feature.authentication.domain.use_case.ValidateTerms
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,11 +28,15 @@ class SignUpViewModel @Inject constructor(
     private val validateEmail: ValidateEmail,
     private val validatePassword: ValidatePassword,
     private val validateConfirmPassword: ValidateConfirmPassword,
-    private val validateTerms: ValidateTerms
+    private val validateTerms: ValidateTerms,
+    private val registration: Registration,
 ) : ViewModel() {
 
     private var _state = mutableStateOf(SignUpState())
     val state: State<SignUpState> = _state
+
+    private var _registrationState = mutableStateOf(RegistrationState())
+    val registrationState: State<RegistrationState> = _registrationState
 
     private val validationEventChannel = Channel<ValidationEvent>()
     val validationEvents = validationEventChannel.receiveAsFlow()
@@ -62,6 +73,22 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
+    fun register(user: User){
+        registration(user).onEach {result->
+            when(result){
+                is Resource.Success ->{
+                    _registrationState.value = RegistrationState(user = result.data?: RegisterUser())
+                }
+                is Resource.Loading ->{
+                    _registrationState.value = RegistrationState(isLoading = true)
+                }
+                is Resource.Error ->{
+                    _registrationState.value = RegistrationState(error = result.message?: Constants.UNEXPECTED_ERROR)
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
     private fun submitData(){
         val firstNameResult = validateFirstName.execute(state.value.firstName)
         val emailResult = validateEmail.execute(state.value.email)
@@ -89,6 +116,7 @@ class SignUpViewModel @Inject constructor(
             )
             return
         }
+
         viewModelScope.launch {
             validationEventChannel.send(ValidationEvent.Success)
         }

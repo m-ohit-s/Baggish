@@ -1,4 +1,4 @@
-package com.example.baggish.feature.authentication.common
+package com.example.baggish.feature.authentication.common.enums
 
 enum class TextFieldKeyboardType {
     EMAIL,

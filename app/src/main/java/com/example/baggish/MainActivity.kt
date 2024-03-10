@@ -16,6 +16,8 @@ import com.example.baggish.feature.authentication.common.Constants
 import com.example.baggish.feature.authentication.presentation.AuthenticationScreen
 import com.example.baggish.feature.authentication.presentation.sign_in.SignInScreen
 import com.example.baggish.feature.authentication.presentation.sign_up.SignUpScreen
+import com.example.baggish.feature.home.presentation.HomeScreen
+import com.example.baggish.feature.home.presentation.Screen
 import com.example.baggish.ui.theme.BaggishTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -49,6 +51,9 @@ fun StartApp(){
         }
         composable(AuthenticationScreen.SignUpScreen.route){
             SignUpScreen(navController = navController)
+        }
+        composable(Screen.HomeScreen.route){
+            HomeScreen()
         }
     }
 }

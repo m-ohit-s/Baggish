@@ -1,11 +1,14 @@
 package com.example.baggish.feature.authentication.presentation.sign_in
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -17,30 +20,49 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.baggish.R
 import com.example.baggish.core.presentation.components.BrandDesign
-import com.example.baggish.feature.authentication.common.TextFieldKeyboardType
+import com.example.baggish.feature.authentication.common.enums.TextFieldKeyboardType
 import com.example.baggish.feature.authentication.presentation.AuthenticationScreen
 import com.example.baggish.feature.authentication.presentation.sign_in.components.SignInButton
 import com.example.baggish.feature.authentication.presentation.sign_in.components.SignInEntryField
+import com.example.baggish.feature.authentication.presentation.sign_up.ValidationEvent
 
 @Composable
 fun SignInScreen(
     navController: NavController,
-    modifier: Modifier=Modifier
+    modifier: Modifier=Modifier,
+    signInViewModel: SignInViewModel = hiltViewModel()
 ){
     Surface(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.inversePrimary
     ) {
-        val signInViewModel = viewModel<SignInViewModel>()
+        val state = signInViewModel.state
+        val context = LocalContext.current
+
+        LaunchedEffect(key1 = context){
+            signInViewModel.validationEvents.collect{event->
+                when(event){
+                    is ValidationEvent.Success -> {
+                        Toast.makeText(
+                            context,
+                            "Registration Successful",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -57,26 +79,40 @@ fun SignInScreen(
             ){
                 SignInEntryField(
                     label = stringResource(id = R.string.sign_in_email),
-                    value = signInViewModel.state.email,
+                    value = state.value.email,
                     onValueChange = {
-                        signInViewModel.state = signInViewModel.state.copy(email=it)
+                        signInViewModel.onEvent(SignInFormEvent.EmailChanged(it))
                     },
                     textFieldKeyboardType = TextFieldKeyboardType.EMAIL
                 )
+                if(state.value.emailError != null){
+                    Text(
+                        text = state.value.emailError!!,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall ,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 50.dp)
+
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
                 SignInEntryField(
                     label = stringResource(id = R.string.sign_in_password),
-                    value = signInViewModel.state.password,
+                    value = state.value.password,
                     onValueChange = {
-                        signInViewModel.state = signInViewModel.state.copy(password = it)
+                        signInViewModel.onEvent(SignInFormEvent.PasswordChanged(it))
                     },
-                    textFieldKeyboardType = if(signInViewModel.state.passwordVisibility) TextFieldKeyboardType.TEXT else TextFieldKeyboardType.PASSWORD,
+                    textFieldKeyboardType = if(state.value.passwordVisible) TextFieldKeyboardType.TEXT else TextFieldKeyboardType.PASSWORD,
                     suffix = {
-                        if(signInViewModel.state.passwordVisibility)
+                        if(state.value.passwordVisible)
                             Icon(
                                 imageVector = Icons.Rounded.VisibilityOff,
                                 contentDescription = null,
                                 Modifier.clickable {
-                                    signInViewModel.state = signInViewModel.state.copy(passwordVisibility = !signInViewModel.state.passwordVisibility)
+                                    signInViewModel.onEvent(
+                                        SignInFormEvent.PasswordVisibilityChanged(!state.value.passwordVisible)
+                                    )
                                 }
                             )
                         else
@@ -84,11 +120,25 @@ fun SignInScreen(
                                 imageVector = Icons.Rounded.Visibility,
                                 contentDescription = null,
                                 Modifier.clickable {
-                                    signInViewModel.state = signInViewModel.state.copy(passwordVisibility = !signInViewModel.state.passwordVisibility)
+                                    signInViewModel.onEvent(
+                                        SignInFormEvent.PasswordVisibilityChanged(!state.value.passwordVisible)
+                                    )
                                 }
                             )
                     }
                 )
+                if(state.value.passwordError != null){
+                    Text(
+                        text = state.value.passwordError!!,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall ,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 50.dp)
+
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
                 Column(modifier = Modifier.padding(80.dp, 30.dp)) {
                     SignInButton(
                         buttonItem = {
@@ -97,7 +147,9 @@ fun SignInScreen(
                                 color = Color.White,
                             )
                         },
-                        onClick = {},
+                        onClick = {
+                            signInViewModel.onEvent(SignInFormEvent.Login)
+                        },
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
