@@ -19,4 +19,7 @@ object Constants {
     const val NETWORK_ERROR = "Cannot reach the server. Please Check your internet Connection"
     const val UNEXPECTED_ERROR = "An unexpected error occurred"
 
+    const val LOGIN_SUCCESS = "Successfully Logged In."
+    const val REGISTRATION_SUCCESS = "Welcome to Baggish"
+
 }

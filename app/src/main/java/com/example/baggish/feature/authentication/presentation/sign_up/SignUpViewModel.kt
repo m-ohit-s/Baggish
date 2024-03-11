@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.baggish.feature.authentication.common.Constants
 import com.example.baggish.feature.authentication.common.Resource
 import com.example.baggish.feature.authentication.data.model.RegisterUser
-import com.example.baggish.feature.authentication.domain.model.User
+import com.example.baggish.feature.authentication.domain.model.RegistrationUserDomain
 import com.example.baggish.feature.authentication.domain.use_case.Registration
 import com.example.baggish.feature.authentication.domain.use_case.ValidateConfirmPassword
 import com.example.baggish.feature.authentication.domain.use_case.ValidateEmail
@@ -73,7 +73,7 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    fun register(user: User){
+    fun registerToDB(user: RegistrationUserDomain){
         registration(user).onEach {result->
             when(result){
                 is Resource.Success ->{

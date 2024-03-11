@@ -1,6 +1,6 @@
 package com.example.baggish.feature.authentication.domain.model
 
-data class User(
+data class RegistrationUserDomain(
     val firstName: String,
     val lastName: String,
     val email: String,

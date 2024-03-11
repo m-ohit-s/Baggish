@@ -4,12 +4,18 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.baggish.feature.authentication.common.Constants
+import com.example.baggish.feature.authentication.common.Resource
+import com.example.baggish.feature.authentication.data.model.LoginUser
+import com.example.baggish.feature.authentication.domain.model.LoginUserDomain
+import com.example.baggish.feature.authentication.domain.use_case.Login
 import com.example.baggish.feature.authentication.domain.use_case.ValidateEmail
-import com.example.baggish.feature.authentication.domain.use_case.ValidatePassword
 import com.example.baggish.feature.authentication.domain.use_case.ValidatePasswordSignIn
 import com.example.baggish.feature.authentication.presentation.sign_up.ValidationEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,10 +23,14 @@ import javax.inject.Inject
 @HiltViewModel
 class SignInViewModel @Inject constructor(
     private val validateEmail: ValidateEmail,
-    private val validatePasswordSignIn: ValidatePasswordSignIn
+    private val validatePasswordSignIn: ValidatePasswordSignIn,
+    private val login: Login
 ) : ViewModel() {
     private var _state = mutableStateOf(SignInState())
     var state: State<SignInState> = _state
+
+    private var _loginState = mutableStateOf(LoginState())
+    var loginState: State<LoginState> = _loginState
 
     private val validationEventChannel = Channel<ValidationEvent>()
     var validationEvents =validationEventChannel.receiveAsFlow()
@@ -40,6 +50,22 @@ class SignInViewModel @Inject constructor(
                 submitData()
             }
         }
+    }
+
+    fun loginToDB(user: LoginUserDomain){
+        login(user).onEach {result->
+            when(result){
+                is Resource.Success -> {
+                    _loginState.value = LoginState(user = result.data ?: LoginUser())
+                }
+                is Resource.Loading -> {
+                    _loginState.value = LoginState(isLoading = true)
+                }
+                is Resource.Error -> {
+                    _loginState.value = LoginState(error = result.message?: Constants.UNEXPECTED_ERROR)
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     private fun submitData(){

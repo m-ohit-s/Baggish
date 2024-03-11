@@ -9,11 +9,11 @@ import com.google.firebase.auth.UserProfileChangeRequest
 import kotlinx.coroutines.tasks.await
 
 class RegistrationRepositoryImpl: RegistrationRepository {
-    val firebaseAuth = FirebaseUtils.FirebaseAuthInstance().getFireBaseAuthInstance()
+    private val firebaseAuth = FirebaseUtils.FirebaseAuthInstance().getFireBaseAuthInstance()
 
     override suspend fun register(name: String, email: String, password: String): RegisterUser {
         val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
-        result.user?.updateProfile(UserProfileChangeRequest.Builder().setDisplayName(name).build())
+        result.user?.updateProfile(UserProfileChangeRequest.Builder().setDisplayName(name).build())?.await()
         val registerUser= RegisterUser()
         registerUser.toRegisterUser(result.user!!)
         return registerUser
