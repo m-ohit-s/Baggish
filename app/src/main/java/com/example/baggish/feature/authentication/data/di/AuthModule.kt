@@ -16,7 +16,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppModule {
+object AuthModule {
     @Provides
     @Singleton
     fun provideEmailValidationRepository(): EmailValidationRepository{
@@ -40,5 +40,4 @@ object AppModule {
     fun provideLoginRepository(): LoginRepository{
         return LoginRepositoryImpl()
     }
-
 }

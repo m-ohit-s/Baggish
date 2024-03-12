@@ -1,6 +1,6 @@
 package com.example.baggish.feature.authentication.data.repository
 
-import com.example.baggish.core.presentation.components.common.utils.firebase.FirebaseUtils
+import com.example.baggish.core.common.utils.firebase.FirebaseUtils
 import com.example.baggish.feature.authentication.data.model.LoginUser
 import com.example.baggish.feature.authentication.data.model.toLoginUser
 import com.example.baggish.feature.authentication.domain.repository.LoginRepository

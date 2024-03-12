@@ -18,13 +18,10 @@ import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,10 +33,8 @@ import androidx.navigation.NavController
 import com.example.baggish.R
 import com.example.baggish.core.presentation.components.BrandDesign
 import com.example.baggish.core.presentation.components.LoadingAnimation
-import com.example.baggish.feature.authentication.common.Constants
+import com.example.baggish.feature.authentication.common.AuthenticationConstants
 import com.example.baggish.feature.authentication.common.enums.TextFieldKeyboardType
-import com.example.baggish.feature.authentication.data.model.LoginUser
-import com.example.baggish.feature.authentication.data.model.RegisterUser
 import com.example.baggish.feature.authentication.domain.model.LoginUserDomain
 import com.example.baggish.feature.authentication.presentation.AuthenticationScreen
 import com.example.baggish.feature.authentication.presentation.sign_in.components.SignInButton
@@ -47,7 +42,6 @@ import com.example.baggish.feature.authentication.presentation.sign_in.component
 import com.example.baggish.feature.authentication.presentation.sign_up.ValidationEvent
 import com.example.baggish.feature.home.presentation.Screen
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun SignInScreen(
@@ -85,10 +79,18 @@ fun SignInScreen(
         }
         else{
             if(loginState.value.error.isNotBlank()){
-                Toast.makeText(context, loginState.value.error, Toast.LENGTH_SHORT).show()
+                LaunchedEffect(key1 = context){
+                    Toast.makeText(context, loginState.value.error, Toast.LENGTH_SHORT).show()
+                }
             }
             if(!loginState.value.user.email.isNullOrBlank()){
-                Log.d("TAG", "${loginState.value.user}")
+                LaunchedEffect(key1 = context){
+                    Toast.makeText(
+                        context,
+                        AuthenticationConstants.LOGIN_SUCCESS,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
                 navController.navigate(Screen.HomeScreen.route){
                     popUpTo(AuthenticationScreen.SignInScreen.route){
                         inclusive = true

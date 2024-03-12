@@ -1,6 +1,6 @@
 package com.example.baggish.feature.authentication.domain.use_case
 
-import com.example.baggish.feature.authentication.common.Constants
+import com.example.baggish.feature.authentication.common.AuthenticationConstants
 import javax.inject.Inject
 
 class ValidatePasswordSignIn @Inject constructor() {
@@ -8,7 +8,7 @@ class ValidatePasswordSignIn @Inject constructor() {
         if(password.isBlank()){
             return ValidationResult(
                 successful = false,
-                errorMessage = Constants.PASSWORD_EMPTY_ERROR
+                errorMessage = AuthenticationConstants.PASSWORD_EMPTY_ERROR
             )
         }
         return ValidationResult(

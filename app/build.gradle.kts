@@ -72,7 +72,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     //manual dependencies
-    implementation("androidx.compose.material:material-icons-extended:1.6.2")
+    implementation("androidx.compose.material:material-icons-extended:1.6.3")
 
     //view-model
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
@@ -100,4 +100,27 @@ dependencies {
     // Coroutine Lifecycle Scopes
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
     implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+
+//    // Local unit tests
+//    testImplementation ("androidx.test:core:1.5.0")
+//    testImplementation ("junit:junit:4.13.2")
+//    testImplementation ("androidx.arch.core:core-testing:2.2.0")
+//    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+//    testImplementation ("com.google.truth:truth:1.1.3")
+//    testImplementation ("com.squareup.okhttp3:mockwebserver:4.9.1")
+//    testImplementation ("io.mockk:mockk:1.10.5")
+//    debugImplementation ("androidx.compose.ui:ui-test-manifest:1.6.3")
+//
+//    // Instrumentation tests
+//    androidTestImplementation ("com.google.dagger:hilt-android-testing:2.50")
+//    kaptAndroidTest ("com.google.dagger:hilt-android-compiler:2.50")
+//    androidTestImplementation("junit:junit:4.13.2")
+//    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+//    androidTestImplementation ("androidx.arch.core:core-testing:2.2.0")
+//    androidTestImplementation ("com.google.truth:truth:1.1.3")
+//    androidTestImplementation ("androidx.test.ext:junit:1.1.5")
+//    androidTestImplementation ("androidx.test:core-ktx:1.5.0")
+//    androidTestImplementation ("com.squareup.okhttp3:mockwebserver:4.9.1")
+//    androidTestImplementation ("io.mockk:mockk-android:1.10.5")
+//    androidTestImplementation ("androidx.test:runner:1.5.2")
 }

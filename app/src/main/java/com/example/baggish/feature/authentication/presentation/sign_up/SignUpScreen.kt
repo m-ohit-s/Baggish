@@ -34,6 +34,7 @@ import androidx.navigation.NavController
 import com.example.baggish.R
 import com.example.baggish.core.presentation.components.BrandDesign
 import com.example.baggish.core.presentation.components.LoadingAnimation
+import com.example.baggish.feature.authentication.common.AuthenticationConstants
 import com.example.baggish.feature.authentication.common.enums.TextFieldKeyboardType
 import com.example.baggish.feature.authentication.domain.model.RegistrationUserDomain
 import com.example.baggish.feature.authentication.presentation.AuthenticationScreen
@@ -78,14 +79,22 @@ fun SignUpScreen(
         }
         else{
             if(registrationState.value.error.isNotBlank()){
-                Toast.makeText(
-                    context,
-                    registrationState.value.error,
-                    Toast.LENGTH_SHORT
-                ).show()
+                LaunchedEffect(key1 = context){
+                    Toast.makeText(
+                        context,
+                        registrationState.value.error,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
             if(!registrationState.value.user.name.isNullOrBlank() && !registrationState.value.user.email.isNullOrBlank()){
-                Log.d("TAG", "${registrationState.value.user}")
+                LaunchedEffect(key1 = context){
+                    Toast.makeText(
+                        context,
+                        AuthenticationConstants.REGISTRATION_SUCCESS,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
                 navController.navigate(Screen.HomeScreen.route){
                     popUpTo(AuthenticationScreen.SignUpScreen.route){
                         inclusive = true

@@ -1,7 +1,8 @@
 package com.example.baggish.feature.authentication.domain.use_case
 
-import com.example.baggish.feature.authentication.common.Constants
-import com.example.baggish.feature.authentication.common.Resource
+import com.example.baggish.core.common.utils.Constants
+import com.example.baggish.feature.authentication.common.AuthenticationConstants
+import com.example.baggish.core.common.utils.Resource
 import com.example.baggish.feature.authentication.data.model.RegisterUser
 import com.example.baggish.feature.authentication.domain.model.RegistrationUserDomain
 import com.example.baggish.feature.authentication.domain.repository.RegistrationRepository

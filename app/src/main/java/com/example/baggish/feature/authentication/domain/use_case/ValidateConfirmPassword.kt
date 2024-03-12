@@ -1,6 +1,6 @@
 package com.example.baggish.feature.authentication.domain.use_case
 
-import com.example.baggish.feature.authentication.common.Constants
+import com.example.baggish.feature.authentication.common.AuthenticationConstants
 import javax.inject.Inject
 
 class ValidateConfirmPassword @Inject constructor() {
@@ -8,7 +8,7 @@ class ValidateConfirmPassword @Inject constructor() {
         if(password != confirmPassword){
             return ValidationResult(
                 successful = false,
-                errorMessage = Constants.CONFIRM_PASSWORD_MATCH_ERROR
+                errorMessage = AuthenticationConstants.CONFIRM_PASSWORD_MATCH_ERROR
             )
         }
         return ValidationResult(

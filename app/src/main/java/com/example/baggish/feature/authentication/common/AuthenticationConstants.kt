@@ -1,6 +1,6 @@
 package com.example.baggish.feature.authentication.common
 
-object Constants {
+object AuthenticationConstants {
     //routes
     const val SIGN_IN_ROUTE: String = "sign_in"
     const val SIGN_UP_ROUTE: String = "sign_up"
@@ -15,9 +15,6 @@ object Constants {
     const val CONFIRM_PASSWORD_MATCH_ERROR = "The passwords do not match"
     const val TERMS_ERROR = "Please accept the terms"
     const val PASSWORD_EMPTY_ERROR = "the password cannot be blank"
-
-    const val NETWORK_ERROR = "Cannot reach the server. Please Check your internet Connection"
-    const val UNEXPECTED_ERROR = "An unexpected error occurred"
 
     const val LOGIN_SUCCESS = "Successfully Logged In."
     const val REGISTRATION_SUCCESS = "Welcome to Baggish"
