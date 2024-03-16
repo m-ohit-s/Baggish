@@ -14,8 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.navigation.NavController
+import com.example.baggish.core.navigation.Screens
 import com.example.baggish.core.presentation.components.BrandDesign
-import com.example.baggish.feature.authentication.presentation.AuthenticationScreen
 import kotlinx.coroutines.delay
 
 
@@ -37,8 +37,8 @@ fun SplashScreen(
             )
         )
         delay(2000L)
-        navController.navigate(AuthenticationScreen.SignInScreen.route){
-            popUpTo(StartScreen.SplashScreen.route){
+        navController.navigate(Screens.Login.route){
+            popUpTo(Screens.SplashScreen.route){
                 inclusive = true
             }
         }

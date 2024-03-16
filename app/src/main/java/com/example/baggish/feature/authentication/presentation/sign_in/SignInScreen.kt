@@ -31,16 +31,16 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.baggish.R
+import com.example.baggish.core.navigation.Graphs
+import com.example.baggish.core.navigation.Screens
 import com.example.baggish.core.presentation.components.BrandDesign
 import com.example.baggish.core.presentation.components.LoadingAnimation
 import com.example.baggish.feature.authentication.common.AuthenticationConstants
 import com.example.baggish.feature.authentication.common.enums.TextFieldKeyboardType
 import com.example.baggish.feature.authentication.domain.model.LoginUserDomain
-import com.example.baggish.feature.authentication.presentation.AuthenticationScreen
 import com.example.baggish.feature.authentication.presentation.sign_in.components.SignInButton
 import com.example.baggish.feature.authentication.presentation.sign_in.components.SignInEntryField
 import com.example.baggish.feature.authentication.presentation.sign_up.ValidationEvent
-import com.example.baggish.feature.home.presentation.Screen
 import kotlinx.coroutines.delay
 
 @Composable
@@ -91,10 +91,13 @@ fun SignInScreen(
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-                navController.navigate(Screen.HomeScreen.route){
-                    popUpTo(AuthenticationScreen.SignInScreen.route){
+                navController.navigate(Graphs.Main.route){
+                    popUpTo(Graphs.Auth.route){
                         inclusive = true
                     }
+//                    popUpTo(AuthenticationScreen.SignInScreen.route){
+//                        inclusive = true
+//                    }
                 }
             }
             else{
@@ -209,10 +212,13 @@ fun ScreenUI(
                     text = stringResource(id = R.string.move_to_sign_up_button_text),
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.clickable {
-                        navController.navigate(AuthenticationScreen.SignUpScreen.route) {
-                            popUpTo(AuthenticationScreen.SignInScreen.route) {
+                        navController.navigate(Screens.SignUp.route) {
+                            popUpTo(Screens.Login.route){
                                 inclusive = true
                             }
+//                            popUpTo(AuthenticationScreen.SignInScreen.route) {
+//                                inclusive = true
+//                            }
                         }
                     }
                 )

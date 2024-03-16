@@ -27,4 +27,17 @@
 
 
     <string name="sign_in_route">sign_in</string>
+
+
+    <string name="menu_icon_desc">Menu</string>
+    <string name="search_icon_desc">Search</string>
+    <string name="notification_icon_desc">Notifications</string>
+    <string name="wishlist_icon_desc">Wishlist</string>
+    <string name="cart_icon_desc">Cart</string>
+
+
+    <string name="nav_drawer_header_title">Welcome</string>
+    <string name="nav_drawer_header_title_no_auth">Guest</string>
+    <string name="nav_drawer_title_login_button_text">Login</string>
+    <string name="nav_drawer_title_signup_button_text">Sign Up</string>
 </resources>

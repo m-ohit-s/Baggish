@@ -1,10 +1,6 @@
 package com.example.baggish.feature.authentication.common
 
 object AuthenticationConstants {
-    //routes
-    const val SIGN_IN_ROUTE: String = "sign_in"
-    const val SIGN_UP_ROUTE: String = "sign_up"
-    const val SPLASH_SCREEN_ROUTE: String = "splash_screen"
 
     //error messages
     const val FIRST_NAME_EMPTY_ERROR = "first name cannot be blank"

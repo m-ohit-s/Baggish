@@ -1,7 +1,6 @@
 package com.example.baggish.feature.authentication.presentation.sign_up
 
 import SignUpEntryField
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -32,15 +31,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.baggish.R
+import com.example.baggish.core.navigation.Graphs
+import com.example.baggish.core.navigation.Screens
 import com.example.baggish.core.presentation.components.BrandDesign
 import com.example.baggish.core.presentation.components.LoadingAnimation
 import com.example.baggish.feature.authentication.common.AuthenticationConstants
 import com.example.baggish.feature.authentication.common.enums.TextFieldKeyboardType
 import com.example.baggish.feature.authentication.domain.model.RegistrationUserDomain
-import com.example.baggish.feature.authentication.presentation.AuthenticationScreen
 import com.example.baggish.feature.authentication.presentation.sign_up.components.ConditionsField
 import com.example.baggish.feature.authentication.presentation.sign_up.components.SignUpButton
-import com.example.baggish.feature.home.presentation.Screen
 import kotlinx.coroutines.delay
 
 @Composable
@@ -95,10 +94,13 @@ fun SignUpScreen(
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-                navController.navigate(Screen.HomeScreen.route){
-                    popUpTo(AuthenticationScreen.SignUpScreen.route){
+                navController.navigate(Graphs.Main.route){
+                    popUpTo(Graphs.Auth.route){
                         inclusive = true
                     }
+//                    popUpTo(AuthenticationScreen.SignUpScreen.route){
+//                        inclusive = true
+//                    }
                 }
             }
             else{
@@ -322,10 +324,13 @@ fun ScreenUI(
                     text = stringResource(id = R.string.move_to_sign_in_button_text),
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.clickable {
-                        navController.navigate(AuthenticationScreen.SignInScreen.route) {
-                            popUpTo(AuthenticationScreen.SignUpScreen.route) {
+                        navController.navigate(Screens.Login.route) {
+                            popUpTo(Screens.SignUp.route){
                                 inclusive = true
                             }
+//                            popUpTo(AuthenticationScreen.SignUpScreen.route) {
+//                                inclusive = true
+//                            }
                         }
                     }
                 )
