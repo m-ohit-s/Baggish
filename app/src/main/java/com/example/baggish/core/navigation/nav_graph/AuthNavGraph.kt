@@ -11,10 +11,7 @@ import com.example.baggish.feature.authentication.presentation.sign_in.SignInScr
 import com.example.baggish.feature.authentication.presentation.sign_up.SignUpScreen
 
 fun NavGraphBuilder.authNavGraph(navHostController: NavHostController){
-    navigation(startDestination = Screens.SplashScreen.route, route = Graphs.Auth.route){
-        composable(Screens.SplashScreen.route) {
-            SplashScreen(navController = navHostController)
-        }
+    navigation(startDestination = Screens.Login.route, route = Graphs.Auth.route){
         composable(Screens.Login.route){
             SignInScreen(navController = navHostController)
         }

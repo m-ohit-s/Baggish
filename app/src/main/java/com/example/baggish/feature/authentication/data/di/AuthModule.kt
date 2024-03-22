@@ -2,10 +2,12 @@ package com.example.baggish.feature.authentication.data.di
 
 import com.example.baggish.feature.authentication.data.repository.EmailValidationRepositoryImpl
 import com.example.baggish.feature.authentication.data.repository.LoginRepositoryImpl
+import com.example.baggish.feature.authentication.data.repository.LogoutRepositoryImpl
 import com.example.baggish.feature.authentication.data.repository.PasswordValidationRepositoryImpl
 import com.example.baggish.feature.authentication.data.repository.RegistrationRepositoryImpl
 import com.example.baggish.feature.authentication.domain.repository.EmailValidationRepository
 import com.example.baggish.feature.authentication.domain.repository.LoginRepository
+import com.example.baggish.feature.authentication.domain.repository.LogoutRepository
 import com.example.baggish.feature.authentication.domain.repository.PasswordValidationRepository
 import com.example.baggish.feature.authentication.domain.repository.RegistrationRepository
 import dagger.Module
@@ -39,5 +41,11 @@ object AuthModule {
     @Singleton
     fun provideLoginRepository(): LoginRepository{
         return LoginRepositoryImpl()
+    }
+
+    @Provides
+    @Singleton
+    fun provideLogoutRepository(): LogoutRepository{
+        return LogoutRepositoryImpl()
     }
 }

@@ -11,9 +11,13 @@ class LoginRepositoryImpl: LoginRepository {
     private val firebaseAuth = FirebaseUtils.FirebaseAuthInstance().getFireBaseAuthInstance()
 
     override suspend fun login(email: String, password: String): LoginUser {
-        val result = firebaseAuth.signInWithEmailAndPassword(email, password).await()
-        val loginUser = LoginUser()
-        loginUser.toLoginUser(result.user!!)
-        return loginUser
+        return try {
+            val result = firebaseAuth.signInWithEmailAndPassword(email, password).await()
+            val loginUser = LoginUser()
+            loginUser.toLoginUser(result.user!!)
+            loginUser
+        }catch (e: Exception){
+            throw  Exception(e)
+        }
     }
 }

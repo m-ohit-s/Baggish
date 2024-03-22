@@ -16,4 +16,12 @@ object Constants {
     const val AUTH = "auth"
     const val APP = "app"
     const val ROOT = "root"
+    const val SPLASH = "splash"
+
+    // route keys
+    const val USER = "user"
+
+
+    //files
+    const val SESSION_FILE = "session.json"
 }

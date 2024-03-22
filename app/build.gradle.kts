@@ -4,6 +4,8 @@ plugins {
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
     id("com.google.gms.google-services")
+    id("com.google.devtools.ksp")
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 android {
@@ -101,6 +103,20 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
     implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
 
+    //Room
+    implementation ("androidx.room:room-ktx:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-paging:2.6.1")
+
+    //Paging
+    implementation("androidx.paging:paging-runtime-ktx:3.2.1")
+    implementation("androidx.paging:paging-compose:3.2.1")
+
+    //Datastore
+    implementation("androidx.datastore:datastore:1.0.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+
 //    // Local unit tests
 //    testImplementation ("androidx.test:core:1.5.0")
 //    testImplementation ("junit:junit:4.13.2")
@@ -123,4 +139,5 @@ dependencies {
 //    androidTestImplementation ("com.squareup.okhttp3:mockwebserver:4.9.1")
 //    androidTestImplementation ("io.mockk:mockk-android:1.10.5")
 //    androidTestImplementation ("androidx.test:runner:1.5.2")
+
 }

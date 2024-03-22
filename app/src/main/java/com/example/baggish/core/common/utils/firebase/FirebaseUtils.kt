@@ -2,6 +2,7 @@ package com.example.baggish.core.common.utils.firebase
 
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resumeWithException
 
@@ -22,6 +23,7 @@ sealed class FirebaseUtils {
             }
         }
     }
+    @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun <T> Task<T>.await(): T{
         return suspendCancellableCoroutine {cont->
             addOnCompleteListener {

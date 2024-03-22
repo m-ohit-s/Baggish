@@ -3,8 +3,10 @@ package com.example.baggish.feature.landing_screen.presentation.main_screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.Logout
 import androidx.compose.material.icons.filled.ClearAll
 import androidx.compose.material.icons.filled.LocalMall
 import androidx.compose.material.icons.outlined.Notifications
@@ -18,35 +20,92 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.baggish.R
+import com.example.baggish.core.common.utils.session.Session
+import com.example.baggish.core.navigation.Graphs
 import com.example.baggish.core.navigation.nav_graph.MainNavGraph
 import com.example.baggish.feature.landing_screen.presentation.main_screen.components.BottomNavBar
-import com.example.baggish.feature.landing_screen.presentation.main_screen.components.NavDrawerHeaderWithoutAuth
+import com.example.baggish.feature.landing_screen.presentation.main_screen.components.LogoutBottomSheet
+import com.example.baggish.feature.landing_screen.presentation.main_screen.components.NavDrawerHeaderWithAuth
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     rootNavHostController: NavHostController,
+    mainViewModel: MainViewModel = hiltViewModel(),
 ){
+    val session = mainViewModel.session.collectAsState(Session())
+    mainViewModel.getActiveSession()
     val navHostController: NavHostController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState()
+    var isSheetOpen by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    if(mainViewModel.sessionState.value.destroySession){
+        rootNavHostController.navigate(Graphs.Auth.route){
+            popUpTo(rootNavHostController.graph.id){
+                inclusive = true
+            }
+            popUpTo(navHostController.graph.id){
+                inclusive = true
+            }
+        }
+    }
+    if(isSheetOpen){
+        LogoutBottomSheet(
+            modifier = Modifier.height(200.dp),
+            onDismiss = { isSheetOpen = false },
+            onYes = {
+                mainViewModel.clearSession()
+                mainViewModel.logout()
+            },
+            onNo = { isSheetOpen = false},
+            sheetState = sheetState
+        )
+    }
     ModalNavigationDrawer(
         drawerContent = {
             ModalDrawerSheet {
-                NavDrawerHeaderWithoutAuth()
+                NavDrawerHeaderWithAuth(name = session.value.user.firstName)
+                NavigationDrawerItem(
+                    label = {
+                        Text(text = "Logout")
+                            },
+                    selected = false,
+                    onClick = {
+                              isSheetOpen = true
+                    },
+                    icon= {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Rounded.Logout,
+                            contentDescription = null
+                        )
+                    }
+                )
             }
         },
         drawerState = drawerState

@@ -48,6 +48,12 @@ fun NavDrawerHeaderWithoutAuth(modifier: Modifier = Modifier){
 @Composable
 fun NavDrawerHeaderWithAuth(modifier: Modifier = Modifier, name: String = ""){
     Box(modifier = modifier){
-        Text(text = stringResource(id = R.string.nav_drawer_header_title) + " " + name, style = MaterialTheme.typography.titleLarge)
+        Text(
+            text = stringResource(
+                id = R.string.nav_drawer_header_title
+            ) + " " + name,
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.padding(start = 8.dp, top = 16.dp)
+        )
     }
 }

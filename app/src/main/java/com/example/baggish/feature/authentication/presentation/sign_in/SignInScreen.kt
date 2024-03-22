@@ -1,6 +1,5 @@
 package com.example.baggish.feature.authentication.presentation.sign_in
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +21,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.baggish.R
+import com.example.baggish.core.common.utils.session.Session
 import com.example.baggish.core.navigation.Graphs
 import com.example.baggish.core.navigation.Screens
 import com.example.baggish.core.presentation.components.BrandDesign
@@ -49,6 +50,18 @@ fun SignInScreen(
     modifier: Modifier=Modifier,
     signInViewModel: SignInViewModel = hiltViewModel()
 ){
+
+    val sessionData = signInViewModel.session.collectAsState(Session())
+    LaunchedEffect(key1 = true){
+        signInViewModel.collectSession()
+    }
+    if(sessionData.value.user.email.isNotBlank()){
+        navController.navigate(Graphs.Main.route){
+            popUpTo(navController.graph.id){
+                inclusive = true
+            }
+        }
+    }
     Surface(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.inversePrimary
@@ -66,7 +79,6 @@ fun SignInScreen(
                             state.value.password
                         )
                         signInViewModel.loginToDB(user)
-                        Log.d("TAG", "${loginState.value.user}")
                     }
                 }
             }
@@ -92,12 +104,9 @@ fun SignInScreen(
                     ).show()
                 }
                 navController.navigate(Graphs.Main.route){
-                    popUpTo(Graphs.Auth.route){
-                        inclusive = true
+                    popUpTo(navController.graph.id){
+                        inclusive = false
                     }
-//                    popUpTo(AuthenticationScreen.SignInScreen.route){
-//                        inclusive = true
-//                    }
                 }
             }
             else{
@@ -216,9 +225,6 @@ fun ScreenUI(
                             popUpTo(Screens.Login.route){
                                 inclusive = true
                             }
-//                            popUpTo(AuthenticationScreen.SignInScreen.route) {
-//                                inclusive = true
-//                            }
                         }
                     }
                 )

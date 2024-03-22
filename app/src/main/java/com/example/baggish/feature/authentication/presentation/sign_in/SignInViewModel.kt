@@ -6,6 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.baggish.core.common.utils.Constants
 import com.example.baggish.core.common.utils.Resource
+import com.example.baggish.core.common.utils.session.Session
+import com.example.baggish.core.common.utils.session.SessionCache
+import com.example.baggish.core.common.utils.session.SessionUser
 import com.example.baggish.feature.authentication.data.model.LoginUser
 import com.example.baggish.feature.authentication.domain.model.LoginUserDomain
 import com.example.baggish.feature.authentication.domain.use_case.Login
@@ -14,6 +17,8 @@ import com.example.baggish.feature.authentication.domain.use_case.ValidatePasswo
 import com.example.baggish.feature.authentication.presentation.sign_up.ValidationEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -24,7 +29,8 @@ import javax.inject.Inject
 class SignInViewModel @Inject constructor(
     private val validateEmail: ValidateEmail,
     private val validatePasswordSignIn: ValidatePasswordSignIn,
-    private val login: Login
+    private val login: Login,
+    private val sessionCache: SessionCache,
 ) : ViewModel() {
     private var _state = mutableStateOf(SignInState())
     var state: State<SignInState> = _state
@@ -32,8 +38,12 @@ class SignInViewModel @Inject constructor(
     private var _loginState = mutableStateOf(LoginState())
     var loginState: State<LoginState> = _loginState
 
+    private var _session = MutableStateFlow(Session())
+    val session: StateFlow<Session> = _session
+
     private val validationEventChannel = Channel<ValidationEvent>()
     var validationEvents =validationEventChannel.receiveAsFlow()
+
 
     fun onEvent(event: SignInFormEvent){
         when(event){
@@ -56,7 +66,10 @@ class SignInViewModel @Inject constructor(
         login(user).onEach {result->
             when(result){
                 is Resource.Success -> {
-                    _loginState.value = LoginState(user = result.data ?: LoginUser())
+                    _loginState.value = LoginState(user = result.data ?: LoginUser(), isLoading = false)
+                    val sessionObject = createSession(result.data)
+                    saveSession(sessionObject)
+                    println("session = $session")
                 }
                 is Resource.Loading -> {
                     _loginState.value = LoginState(isLoading = true)
@@ -66,6 +79,38 @@ class SignInViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+    fun collectSession(){
+        viewModelScope.launch {
+            sessionCache.getActiveSession().collect{
+                _session.value = it
+            }
+        }
+    }
+
+    private fun createSession(loginUser: LoginUser?): Session {
+        val name = loginUser?.let {
+            it.name?.split(" ")
+        }
+        val firstName = name?.get(0)
+        var lastName = ""
+        name?.let {
+            if(name.size>1){
+                for (i in 1..<name.size) {
+                    lastName += name[i]
+                }
+            }
+        }
+        val sessionUser = SessionUser(firstName!!, lastName, loginUser.email!!)
+        return Session(
+            sessionUser,
+            ""
+        )
+    }
+    
+    private suspend fun saveSession(session: Session) {
+        sessionCache.saveSession(session)
     }
 
     private fun submitData(){
